@@ -9,10 +9,43 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [calculations, setCalculations] = useState({
+    all: 0,
+    average: 0,
+    positive: 0
+  })
 
-  const handleGood = () => setGood(good + 1);
-  const handleNeutral = () => setNeutral(neutral + 1);
-  const handleBad = () => setBad(bad + 1);
+  const calculate = (good, neutral, bad) => {
+    const newAll = good + neutral + bad;
+    const newAverage = (good - bad) / newAll;
+    const newPositive = (good / newAll) * 100;
+    setCalculations({
+      all: newAll,
+      average: newAverage,
+      positive: newPositive
+    })
+  }
+
+  const handleGood = () => {
+    setGood(good + 1);
+    const updatedGood = good + 1;
+    calculate(updatedGood, neutral, bad);
+    return good;
+  }
+
+  const handleNeutral = () => {
+    setNeutral(neutral + 1);
+    const updatedNeutral = neutral + 1;
+    calculate(good, updatedNeutral, bad);
+    return neutral;
+  }
+
+  const handleBad = () => {
+    setBad(bad + 1);
+    const updatedBad = bad + 1;
+    calculate(good, neutral, updatedBad);
+    return bad;
+  }
 
   return (
     <div>
@@ -25,6 +58,9 @@ const App = () => {
       <Tracker trackerName="good" statistic={good} />
       <Tracker trackerName="neutral" statistic={neutral} />
       <Tracker trackerName="bad" statistic={bad} />
+      <Tracker trackerName="all" statistic={calculations.all} />
+      <Tracker trackerName="average" statistic={calculations.average} />
+      <Tracker trackerName="positive" statistic={calculations.positive} />
     </div>
   )
 }
