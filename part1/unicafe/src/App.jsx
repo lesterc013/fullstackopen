@@ -2,15 +2,22 @@ import { useState } from 'react'
 
 const Button = ({ handleClick, buttonName }) => <button onClick={handleClick}>{buttonName}</button>
 
+const Tracker = ({ name, statistic}) => {
+  if (name == "positive") {
+    return <div>{name} {statistic} %</div>
+  }
+  return <div>{name} {statistic}</div>
+}
+
 const Statistics = ({ statisticsArray }) => {
   return (
     <>
-      <div>{statisticsArray[0].name} {statisticsArray[0].statistic}</div>
-      <div>{statisticsArray[1].name} {statisticsArray[1].statistic}</div>
-      <div>{statisticsArray[2].name} {statisticsArray[2].statistic}</div>
-      <div>{statisticsArray[3].name} {statisticsArray[3].statistic}</div>
-      <div>{statisticsArray[4].name} {statisticsArray[4].statistic}</div>
-      <div>{statisticsArray[5].name} {statisticsArray[5].statistic}%</div>
+      <Tracker name={statisticsArray[0].name} statistic={statisticsArray[0].statistic}/>
+      <Tracker name={statisticsArray[1].name} statistic={statisticsArray[1].statistic}/>
+      <Tracker name={statisticsArray[2].name} statistic={statisticsArray[2].statistic}/>
+      <Tracker name={statisticsArray[3].name} statistic={statisticsArray[3].statistic}/>
+      <Tracker name={statisticsArray[4].name} statistic={statisticsArray[4].statistic}/>
+      <Tracker name={statisticsArray[5].name} statistic={statisticsArray[5].statistic}/>
     </>
   )
 }
