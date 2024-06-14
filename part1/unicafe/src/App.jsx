@@ -2,22 +2,18 @@ import { useState } from 'react'
 
 const Button = ({ handleClick, buttonName }) => <button onClick={handleClick}>{buttonName}</button>
 
-const Tracker = ({ name, statistic}) => {
+const Tracker = ({ key, name, statistic}) => {
   if (name == "positive") {
-    return <div>{name} {statistic} %</div>
+    return <div key={key}>{name} {statistic} %</div>
   }
-  return <div>{name} {statistic}</div>
+  return <div key={key}>{name} {statistic}</div>
 }
 
 const Statistics = ({ statisticsArray }) => {
+  const trackerComponents = statisticsArray.map((tracker) => <Tracker key={tracker.name} name={tracker.name} statistic={tracker.statistic} />)
   return (
     <>
-      <Tracker name={statisticsArray[0].name} statistic={statisticsArray[0].statistic}/>
-      <Tracker name={statisticsArray[1].name} statistic={statisticsArray[1].statistic}/>
-      <Tracker name={statisticsArray[2].name} statistic={statisticsArray[2].statistic}/>
-      <Tracker name={statisticsArray[3].name} statistic={statisticsArray[3].statistic}/>
-      <Tracker name={statisticsArray[4].name} statistic={statisticsArray[4].statistic}/>
-      <Tracker name={statisticsArray[5].name} statistic={statisticsArray[5].statistic}/>
+      {trackerComponents}
     </>
   )
 }
