@@ -2,7 +2,18 @@ import { useState } from 'react'
 
 const Button = ({ handleClick, buttonName }) => <button onClick={handleClick}>{buttonName}</button>
 
-const Tracker = ({ trackerName, statistic }) => <div>{trackerName} {statistic}</div>
+const Statistics = ({ statisticsArray }) => {
+  return (
+    <>
+      <div>{statisticsArray[0].name} {statisticsArray[0].statistic}</div>
+      <div>{statisticsArray[1].name} {statisticsArray[1].statistic}</div>
+      <div>{statisticsArray[2].name} {statisticsArray[2].statistic}</div>
+      <div>{statisticsArray[3].name} {statisticsArray[3].statistic}</div>
+      <div>{statisticsArray[4].name} {statisticsArray[4].statistic}</div>
+      <div>{statisticsArray[5].name} {statisticsArray[5].statistic}%</div>
+    </>
+  )
+}
 
 const App = () => {
   // save clicks of each button to its own state
@@ -47,6 +58,33 @@ const App = () => {
     return bad;
   }
 
+  const statisticsArray = [
+    {
+      name: "good",
+      statistic: good
+    },
+    {
+      name: "neutral",
+      statistic: neutral
+    },
+    {
+      name: "bad",
+      statistic: bad
+    },
+    {
+      name: "all",
+      statistic: calculations.all
+    },
+    {
+      name: "average",
+      statistic: calculations.average
+    },
+    {
+      name: "positive",
+      statistic: calculations.positive
+    }
+  ]
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -55,12 +93,7 @@ const App = () => {
       <Button handleClick={handleBad} buttonName="bad"/>
 
       <h1>statistics</h1>
-      <Tracker trackerName="good" statistic={good} />
-      <Tracker trackerName="neutral" statistic={neutral} />
-      <Tracker trackerName="bad" statistic={bad} />
-      <Tracker trackerName="all" statistic={calculations.all} />
-      <Tracker trackerName="average" statistic={calculations.average} />
-      <Tracker trackerName="positive" statistic={calculations.positive} />
+      <Statistics statisticsArray={statisticsArray} />
     </div>
   )
 }
