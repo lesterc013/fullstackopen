@@ -5,13 +5,13 @@ const Header = ({course}) => {
   )
 }
 
-const Content = (props) => {
-  console.log("Content component works")
+const Content = ({parts}) => {
+  console.log("New Content works");
   return (
     <>
-      <Part part={props.part1} exercises={props.exercises1} />
-      <Part part={props.part2} exercises={props.exercises2} />
-      <Part part={props.part3} exercises={props.exercises3} />
+      <Part partName={parts[0].name} exercises={parts[0].exercises}/>
+      <Part partName={parts[1].name} exercises={parts[1].exercises}/>
+      <Part partName={parts[2].name} exercises={parts[2].exercises}/>
     </>
   )
 }
@@ -19,7 +19,7 @@ const Content = (props) => {
 const Part = (props) => {
   console.log("Part component works")
   return (
-    <p>{props.part} {props.exercises}</p>
+    <p>{props.partName} {props.exercises}</p>
   )
 }
 
@@ -51,16 +51,12 @@ const App = () => {
     <div>
       <Header course={course}/>
 
-      <Content 
-        part1={parts[0].name} exercises1={parts[0].exercises} 
-        part2={parts[1].name} exercises2={parts[1].exercises} 
-        part3={parts[2].name} exercises3={parts[2].exercises} 
-      />
+      <Content parts={parts} />
 
       <Total 
         exercises1={parts[0].exercises} 
         exercises2={parts[1].exercises} 
-        exercises3={parts[2].exercises} 
+        exercises3={parts[0].exercises} 
       />
     </div>
   )
