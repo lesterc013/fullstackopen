@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Button = ({ handleClick, buttonName }) => <button onClick={handleClick}>{buttonName}</button>
 
-const Tracker = ({ key, name, statistic}) => {
+const StatisticLine = ({ key, name, statistic}) => {
   if (name == "positive") {
     return <div key={key}>{name} {statistic} %</div>
   }
@@ -10,7 +10,7 @@ const Tracker = ({ key, name, statistic}) => {
 }
 
 const Statistics = ({ statisticsArray }) => {
-  const trackerComponents = statisticsArray.map((tracker) => <Tracker key={tracker.name} name={tracker.name} statistic={tracker.statistic} />)
+  const trackerComponents = statisticsArray.map((tracker) => <StatisticLine key={tracker.name} name={tracker.name} statistic={tracker.statistic} />)
   return (
     <>
       {trackerComponents}
