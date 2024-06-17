@@ -8,6 +8,14 @@ const Button = ({ buttonName, handleClick }) => {
   )
 }
 
+const Anecdote = ({ anecdotesArray, selected }) => {
+  return <div>{anecdotesArray[selected]}</div>
+}
+
+const DisplayVotes = ({ votesArray, selected }) => {
+  return <div>has {votesArray[selected]} votes</div>
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -34,16 +42,19 @@ const App = () => {
     setVotes(votesCopy)
   }
 
+  const findMostVotes = () => votes.indexOf(Math.max(...votes))
+
   return (
     <>
-      <div>
-        {anecdotes[selected]}
-      </div>
-      <div>
-        has {votes[selected]} votes
-      </div>
+      <h1>Anecdote of the day</h1>
+      <Anecdote anecdotesArray={anecdotes} selected={selected} />
+      <DisplayVotes votesArray={votes} selected={selected} />
       <Button buttonName="vote" handleClick={handleVote} />
       <Button buttonName="next anecdote" handleClick={handleNextAnecdote} />
+      
+      <h1>Anecdote with the most votes</h1>
+      <Anecdote anecdotesArray={anecdotes} selected={findMostVotes()} />
+      <DisplayVotes votesArray={votes} selected={findMostVotes()} />
     </>
   )
 }
