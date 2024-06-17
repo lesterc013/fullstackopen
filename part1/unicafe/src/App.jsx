@@ -3,18 +3,23 @@ import { useState } from 'react'
 const Button = ({ handleClick, buttonName }) => <button onClick={handleClick}>{buttonName}</button>
 
 const StatisticLine = ({ name, statistic}) => {
-  if (name == "positive") {
-    return <div>{name} {statistic} %</div>
-  }
-  return <div>{name} {statistic}</div>
+  return (
+      <tr>
+        <td>{name}</td> 
+        <td>{name == "positive" ? statistic + '%' : statistic}</td> 
+      </tr>
+  )
+  // return <div>{name} {statistic}</div>
 }
 
 const Statistics = ({ statisticsArray }) => {
   const statisticLineComponents = statisticsArray.map((statisticLine) => <StatisticLine key={statisticLine.id} name={statisticLine.name} statistic={statisticLine.statistic} />)
   return (
-    <>
-      {statisticLineComponents}
-    </>
+    <table>
+      <tbody>
+        {statisticLineComponents}
+      </tbody>
+    </table>
   )
 }
 
