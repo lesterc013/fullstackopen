@@ -96,7 +96,7 @@ const App = () => {
       <Button handleClick={handleBad} buttonName="bad"/>
 
       <h1>statistics</h1>
-      <Statistics statisticsArray={statisticsArray} />
+      {good == 0 && neutral == 0 && bad == 0 ? <div>No feedback given</div> : <Statistics statisticsArray={statisticsArray} />}
     </div>
   )
 }
