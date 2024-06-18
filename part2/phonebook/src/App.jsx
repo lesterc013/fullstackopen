@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Form from "./components/Form.jsx"
 import Filter from "./components/Filter.jsx"
-import Numbers from "./components/Numbers.jsx"
+import Persons from "./components/Persons.jsx"
 import phonebook from './services/phonebook.js'
 
 const App = () => {
@@ -40,6 +40,16 @@ const App = () => {
     setNewFilter(event.target.value.toLowerCase())
   }
 
+  const handleDelete = (id) => {
+    const toDeletePerson = persons.filter(person => person.id == id)
+    if (window.confirm(`Confirm delete ${toDeletePerson[0].name}?`)) {
+      phonebook.deletePerson(id)
+        .then(deletedPerson => {
+          setPersons(persons.filter(person => person.id !== deletedPerson.id))
+      })
+    }
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -47,11 +57,10 @@ const App = () => {
       <Form handleSubmit={handleSubmit} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       {/* Changed implementation to remove need for filteredPersons array -- Simply filter the persons array within the Numbers props */}
-      <Numbers persons={
+      <Persons persons={
         newFilter ? persons.filter(person => {
           return person.name.toLowerCase().includes(newFilter)
-        }) : persons
-      } />
+        }) : persons} handleDelete={handleDelete} />
     </div>
   )
 }
