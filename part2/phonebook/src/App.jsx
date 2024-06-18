@@ -22,8 +22,19 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to the phonebook`)
+    if (persons.some((person) => person.name === newName && person.number === newNumber)) {
+      alert(`${newName} is already added to the phonebook and number is the same`)
+    } 
+    else if (persons.some((person) => person.name === newName)) {
+      const toUpdatePerson = persons.filter(person => person.name === newName)[0]
+      if (window.confirm(`${toUpdatePerson.name} is already added to phonebook, replace old number with a new one?`)) {
+        toUpdatePerson.number = newNumber
+        const toUpdateID = toUpdatePerson.id
+        phonebook.updatePerson(toUpdatePerson)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id === toUpdateID ? updatedPerson : person))
+          })
+      }
     } else {
       const newPerson = {
         name: newName,
