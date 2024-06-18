@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Form from "./components/Form.jsx"
 import Filter from "./components/Filter.jsx"
 import Numbers from "./components/Numbers.jsx"
-import axios from 'axios'
+import phonebook from './services/phonebook.js'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,10 +11,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-    .get('http://localhost:3001/persons')
-    .then((response) => {
-      setPersons(response.data)
+    phonebook.getNumbers().then(allNumbers => {
+      setPersons(allNumbers)
     })
   }, [])
 
