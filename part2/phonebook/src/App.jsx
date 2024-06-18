@@ -11,8 +11,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    phonebook.getNumbers().then(allNumbers => {
-      setPersons(allNumbers)
+    phonebook.getPeople().then(allPeople => {
+      setPersons(allPeople)
     })
   }, [])
 
@@ -25,10 +25,14 @@ const App = () => {
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to the phonebook`)
     } else {
-      setPersons(persons.concat({
+      const newPerson = {
         name: newName,
-        number: newNumber
-      }))
+        number: newNumber,
+      }
+      phonebook.addPerson(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
     }
   }
 
@@ -36,8 +40,6 @@ const App = () => {
     setNewFilter(event.target.value.toLowerCase())
   }
 
-  console.log('Testing filter', newFilter ? persons.filter(person => {person.name.toLowerCase().includes(newFilter)}) : persons)
-  
   return (
     <div>
       <h1>Phonebook</h1>
