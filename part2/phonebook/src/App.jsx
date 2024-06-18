@@ -1,35 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Form from "./components/Form.jsx"
 import Filter from "./components/Filter.jsx"
 import Numbers from "./components/Numbers.jsx"
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { 
-      name: 'Arto Hellas',
-      number: "040-1234567"
-    },
-    { 
-      name: 'Lester Chan',
-      number: "93219818"
-    },
-    { 
-      name: 'Tom Cat',
-      number: "098765432"
-    },
-    { 
-      name: 'Jerry Lee Kwok Song Bo',
-      number: "00999999000"
-    },
-    { 
-      name: 'Big Ray Wong',
-      number: "092092309"
-    },
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  // const [newFilter, setNewFilter] = useState('') Don't need this because like one of the past examples, the newFilter is always "one step behind" hence can't use this to filter -- or rather no point since we won't need to access it again
-  const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [newFilter, setNewFilter] = useState('')
+
+  useEffect(() => {
+    axios
+    .get('http://localhost:3001/persons')
+    .then((response) => {
+      setPersons(response.data)
+    })
+  }, [])
 
   const handleNameChange = event => setNewName(event.target.value)
   
@@ -44,17 +31,14 @@ const App = () => {
         name: newName,
         number: newNumber
       }))
-      setFilteredPersons(filteredPersons.concat({
-        name: newName,
-        number: newNumber
-      }))
     }
   }
 
   const handleFilter = (event) => {
-    const filter = event.target.value.toLowerCase()
-    setFilteredPersons(persons.filter(person => person.name.toLowerCase().includes(filter)))
+    setNewFilter(event.target.value.toLowerCase())
   }
+
+  console.log('Testing filter', newFilter ? persons.filter(person => {person.name.toLowerCase().includes(newFilter)}) : persons)
   
   return (
     <div>
@@ -62,7 +46,12 @@ const App = () => {
       <Filter handleFilter={handleFilter} />
       <Form handleSubmit={handleSubmit} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Numbers persons={filteredPersons} />
+      {/* Changed implementation to remove need for filteredPersons array -- Simply filter the persons array within the Numbers props */}
+      <Numbers persons={
+        newFilter ? persons.filter(person => {
+          return person.name.toLowerCase().includes(newFilter)
+        }) : persons
+      } />
     </div>
   )
 }
