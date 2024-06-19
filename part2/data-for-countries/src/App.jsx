@@ -14,7 +14,7 @@ const Display = ({ countriesNames, searchValue, handleShow }) => {
   }
 
   const filteredCountries = countriesNames.filter(countryName => countryName.toLowerCase().includes(searchValue.toLowerCase()))
-  
+
   if (filteredCountries.length > 10) {
     return <div>Too many matches, specify another filer</div>
   }
@@ -30,16 +30,19 @@ const Display = ({ countriesNames, searchValue, handleShow }) => {
 }
 
 const Specific = ({specificCountryName}) => {
+  console.log("Rendering...")
   const [specificCountry, setSpecificCountry] = useState(null)
   const specificURL = 'https://studies.cs.helsinki.fi/restcountries/api/name/'
+  
   // Without useEffect, we will keep re-rendering the programme. This is because of setSpecificCountry below where everytime a state is set, it causes a re-render
   // useEffect should only run if there is a change to specificCountryName
   useEffect(() => {
+    console.log("useEffect to set specific country")
     axios
-      .get(`${specificURL}${specificCountryName}`)
-      .then(response => response.data)
-      .then(country => setSpecificCountry(country))
-    }, [specificCountryName])
+    .get(`${specificURL}${specificCountryName}`)
+    .then(response => response.data)
+    .then(country => setSpecificCountry(country))
+  }, [specificCountryName])
 
     if (!specificCountry) {
       return null
@@ -49,6 +52,7 @@ const Specific = ({specificCountryName}) => {
     for (const [k, v] of Object.entries(specificCountry.languages)) {
       languages.push(v)      
     }
+
     return (
     <>
       <h1>{specificCountry.name.common}</h1>
@@ -59,6 +63,33 @@ const Specific = ({specificCountryName}) => {
         {languages.map(language => <li key={language}>{language}</li>)}
       </ul>
       <img src={specificCountry.flags.png} alt={`${specificCountry.name.common} flag`} />
+      <Weather lat={specificCountry.capitalInfo.latlng[0]} lon={specificCountry.capitalInfo.latlng[1]} capital={specificCountry.capital} />
+    </>
+  )
+}
+
+const Weather = ({ lat, lon, capital }) => {
+  const [weatherDetails, setWeatherDetails] = useState(null)
+  const apiKey = import.meta.env.VITE_KEY
+  const weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+
+  useEffect(() => {
+    axios
+      .get(weatherURL)
+      .then(response => response.data)
+      .then(weather => setWeatherDetails(weather))
+  }, [lat, lon, weatherURL])
+
+  if (!weatherDetails) {
+    return null
+  }
+
+  return (
+    <>
+      <h2>{`Weather in ${capital}`}</h2>
+      <div>Temperature: {weatherDetails.main.temp} C</div>
+      <img src={`https://openweathermap.org/img/wn/${weatherDetails.weather[0].icon}@2x.png`} alt='weather icon' />
+      <div>Wind: {weatherDetails.wind.speed} m/s</div>
     </>
   )
 }
