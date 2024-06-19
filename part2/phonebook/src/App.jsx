@@ -11,6 +11,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
+  const [timeoutID, setTimeoutID] = useState(undefined)
 
   useEffect(() => {
     phonebook.getPeople().then(allPeople => {
@@ -21,6 +23,14 @@ const App = () => {
   const handleNameChange = event => setNewName(event.target.value)
   
   const handleNumberChange = event => setNewNumber(event.target.value)
+
+  const personNotInDatabase = (missingPerson) => {
+    setMessage(`${missingPerson.name} is already deleted from database`)
+    setMessageType('red')
+    clearTimeout(timeoutID)
+    setTimeoutID(setTimeout(() => {setMessage(null)}, 5000))
+    setPersons(persons.filter(person => person.id !== missingPerson.id))
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -38,9 +48,11 @@ const App = () => {
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id === toUpdateID ? updatedPerson : person))
           })
+          .catch(error => {
+            personNotInDatabase(toUpdatePerson)
+          })
       }
       setMessage(`Changed ${toUpdatePerson.name}'s number to ${toUpdatePerson.number}`)
-      setTimeout(() => {setMessage(null)}, 3000)
     } 
     // If new person entirely
     else {
@@ -54,9 +66,12 @@ const App = () => {
       })
       // First to setMessage to the newPerson's name
       setMessage(`Added ${newPerson.name}`)
-      // Then, setTimeout to setMessage to null to clear it after 5000ms
-      setTimeout(() => {setMessage(null)}, 3000)
     }
+    setMessageType('green')
+    // Clear any previous timeout so that the above message stays on for 3s even if a previous operation was done <3s ago
+    // Need to useState to keep hold of the timeoutID
+    clearTimeout(timeoutID)
+    setTimeoutID(setTimeout(() => {setMessage(null)}, 5000))
   }
 
   const handleFilter = (event) => {
@@ -69,14 +84,22 @@ const App = () => {
       phonebook.deletePerson(id)
         .then(deletedPerson => {
           setPersons(persons.filter(person => person.id !== deletedPerson.id))
+          setMessage(`Deleted ${toDeletePerson[0].name} from database`)
+          setMessageType('green')
+          clearTimeout(timeoutID)
+          setTimeoutID(setTimeout(() => {setMessage(null)}, 5000))
       })
+      // If the Promise is not fulfilled i.e. maybe the person has already been deleted
+        .catch(error => {
+          personNotInDatabase(toDeletePerson[0])
+        })
     }
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={message} />
+      <Notification message={message} messageType={messageType} />
       <Filter handleFilter={handleFilter} />
       <Form handleSubmit={handleSubmit} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
