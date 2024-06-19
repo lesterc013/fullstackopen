@@ -7,23 +7,23 @@ const Search = ({handleChange}) => {
   )
 }
 
-const Display = ({ countriesNames, searchValue }) => {
-  const filteredCountries = countriesNames.filter(countryName => countryName.toLowerCase().includes(searchValue))
-
-  if (searchValue === '') {
+const Display = ({ countriesNames, searchValue, handleShow }) => {
+  
+  if (searchValue === '' || searchValue === null) {
     return null
   }
-  else if (filteredCountries.length > 10) {
+
+  const filteredCountries = countriesNames.filter(countryName => countryName.toLowerCase().includes(searchValue.toLowerCase()))
+  
+  if (filteredCountries.length > 10) {
     return <div>Too many matches, specify another filer</div>
   }
   else if (filteredCountries.length == 1) {
-    // Call GET on the specific URL
-    // Could probably do this as a specific component since this is gettingg large
     return <Specific specificCountryName={filteredCountries} />
   }
   else {
     return (
-        filteredCountries.map(countryName => <Country key={countryName} countryName={countryName} />
+        filteredCountries.map(countryName => <Country key={countryName} countryName={countryName} handleShow={handleShow} />
       )
     )
   }
@@ -46,10 +46,9 @@ const Specific = ({specificCountryName}) => {
     } 
 
     const languages = []
-    for (const [v] of Object.entries(specificCountry.languages)) {
+    for (const [k, v] of Object.entries(specificCountry.languages)) {
       languages.push(v)      
     }
-    console.log(languages)
     return (
     <>
       <h1>{specificCountry.name.common}</h1>
@@ -64,13 +63,15 @@ const Specific = ({specificCountryName}) => {
   )
 }
 
-const Country = ({countryName}) => {
-  return <div>{countryName}</div>
+const Country = ({ countryName, handleShow }) => {
+  return (
+    <div>
+      {countryName} <button onClick={() => handleShow(countryName)} >show</button>
+    </div>
+  ) 
 }
 
 const App = () => {
-  // const [searchValue, setSearchValue] = useState(null)
-  // Testing
   const [searchValue, setSearchValue] = useState(null)
   const [countriesNames, setCountriesNames] = useState(null)
   
@@ -91,6 +92,14 @@ const App = () => {
     setSearchValue(event.target.value)
   }
 
+  const handleShow = (countryName) => {
+    // I have the countryName
+    // If i setShow, then I can pass it to Display component
+    // To then filter the countriesNames entire list
+    // Which will cause length to be 1 and hence call Specific
+    setSearchValue(countryName)
+  }
+
   // If countriesNames null
   if (!countriesNames) {
     return (
@@ -103,7 +112,7 @@ const App = () => {
   return (
     <>
       find countries <Search handleChange={handleSearch} />
-      <Display countriesNames={countriesNames} searchValue={searchValue} />
+      <Display countriesNames={countriesNames} searchValue={searchValue} handleShow={handleShow} />
     </>
   )
 }
