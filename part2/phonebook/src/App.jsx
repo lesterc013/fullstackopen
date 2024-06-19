@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Form from "./components/Form.jsx"
 import Filter from "./components/Filter.jsx"
 import Persons from "./components/Persons.jsx"
+import Notification from './components/Notification.jsx'
 import phonebook from './services/phonebook.js'
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     phonebook.getPeople().then(allPeople => {
@@ -22,9 +24,11 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    // If name and number already in phonebook
     if (persons.some((person) => person.name === newName && person.number === newNumber)) {
       alert(`${newName} is already added to the phonebook and number is the same`)
     } 
+    // If name in phonebook, but number is different
     else if (persons.some((person) => person.name === newName)) {
       const toUpdatePerson = persons.filter(person => person.name === newName)[0]
       if (window.confirm(`${toUpdatePerson.name} is already added to phonebook, replace old number with a new one?`)) {
@@ -35,7 +39,11 @@ const App = () => {
             setPersons(persons.map(person => person.id === toUpdateID ? updatedPerson : person))
           })
       }
-    } else {
+      setMessage(`Changed ${toUpdatePerson.name}'s number to ${toUpdatePerson.number}`)
+      setTimeout(() => {setMessage(null)}, 3000)
+    } 
+    // If new person entirely
+    else {
       const newPerson = {
         name: newName,
         number: newNumber,
@@ -43,7 +51,11 @@ const App = () => {
       phonebook.addPerson(newPerson)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-        })
+      })
+      // First to setMessage to the newPerson's name
+      setMessage(`Added ${newPerson.name}`)
+      // Then, setTimeout to setMessage to null to clear it after 5000ms
+      setTimeout(() => {setMessage(null)}, 3000)
     }
   }
 
@@ -64,6 +76,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} />
       <Filter handleFilter={handleFilter} />
       <Form handleSubmit={handleSubmit} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
