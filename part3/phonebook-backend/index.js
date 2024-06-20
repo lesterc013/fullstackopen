@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-const phonebook = [
+let phonebook = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -39,15 +39,30 @@ app.get('/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${phonebook.length} people</p> <p>${date}</p>`)
 })
 
+const getPerson = (id) => phonebook.find(person => person.id === id)
+
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const person = phonebook.find(person => person.id === id)
+    const person = getPerson(id)
 
     if (!person) {
         return response.status(400).end('Bad request: ID requested is not in phonebook')
     }
-
+    
     response.json(person)
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const person = getPerson(id)
+    
+    if (!person) {
+        return response.status(400).end('Bad request: ID requested is not in phonebook')
+    }
+
+    phonebook = phonebook.filter(person => person.id !== id)
+    // response.json(phonebook) -- Should not have any response after a DELETE, just send back status 204 which means successful request and no additional info to send back
+    response.status(204).end()
 })
 
 const PORT = 3001
