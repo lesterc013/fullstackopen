@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-const phonebookData = [
+const phonebook = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -30,7 +30,20 @@ app.get('/', (request, response) => {
 
 app.get('/api/persons', (request, response) => {
     // response.send(phonebookData) -- nothing wrong with this if data passed in is json - except .json converts non-json to json so that would help filter another layer
-    response.json(phonebookData)
+    response.json(phonebook)
+})
+
+// Phonebook has info for 2 people
+// Date
+/**
+ * phonebookData.length
+ * Date object
+ */
+
+app.get('/info', (request, response) => {
+    const date = new Date()
+
+    response.send(`<p>Phonebook has info for ${phonebook.length} people</p> <p>${date}</p>`)
 })
 
 const PORT = 3001
