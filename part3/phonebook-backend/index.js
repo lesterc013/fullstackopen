@@ -65,6 +65,32 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+app.use(express.json()) // Remember this one for POSTS if not app can't read body
+app.post('/api/persons', (request, response) => {
+    /*
+    - Get the name and number from request.body
+    - Error handle if got no name || number
+    - If have
+        - Generate the ID first -- using the random method dictated
+        - We want to save it into a person object
+        - Concat it to the phonebook
+        - Return the phonebook as a response
+    */
+   const body = request.body
+   if (!body.name || !body.number) {
+        return response.status(400).end('Name and/or number is missing!')
+   }
+
+   const newID = Math.floor(Math.random() * (999 - (phonebook.length + 1)))
+   const newPerson = {
+        "name": body.name,
+        "number": body.number,
+        "id": newID
+   }
+   phonebook = phonebook.concat(newPerson)
+   response.json(phonebook)
+})
+
 const PORT = 3001
 app.listen(PORT)
 console.log('Server running on port', PORT)
