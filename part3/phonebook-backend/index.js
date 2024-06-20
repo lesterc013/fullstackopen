@@ -33,17 +33,21 @@ app.get('/api/persons', (request, response) => {
     response.json(phonebook)
 })
 
-// Phonebook has info for 2 people
-// Date
-/**
- * phonebookData.length
- * Date object
- */
-
 app.get('/info', (request, response) => {
     const date = new Date()
 
     response.send(`<p>Phonebook has info for ${phonebook.length} people</p> <p>${date}</p>`)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const person = phonebook.find(person => person.id === id)
+
+    if (!person) {
+        return response.status(400).end('Bad request: ID requested is not in phonebook')
+    }
+
+    response.json(person)
 })
 
 const PORT = 3001
