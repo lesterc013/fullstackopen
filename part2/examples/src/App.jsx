@@ -7,7 +7,14 @@ import './index.css'
 import Footer from "./components/Footer";
 
 const App = () => {
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState(null) 
+    /* 
+        - Instead of initialising with [] empty array, it is more correct to use null to set an initial state - since this denotes that there is nothing in the state at the start
+        - But problem is on first render, the code below calls map on null which causes a TypeError
+        - It is only after rendering that get is called to the db to setNotes
+        - Workaround is to conditional render the App that if !notes i.e. if notes is null, then we render null FIRST,
+        - After get is called and we setNotes --> this will then render App a second time with all the notes
+    */
     const [newNote, setNewNote] = useState("a new note...")
 	const [showAll, setShowAll] = useState(true)
     const [errorMessage, setErrorMessage] = useState(null)
@@ -66,6 +73,10 @@ const App = () => {
                 setErrorMessage(null)}, 5000)
             setNotes(notes.filter(n => n.id !== id))
         })
+    }
+
+    if (!notes) {
+        return null
     }
 
     return (
