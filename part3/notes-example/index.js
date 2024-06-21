@@ -3,6 +3,7 @@
 // require is also from CommonJS (a module formatting system) to assist us in importing the Node.js http module in this case
 
 const express = require('express')
+const cors = require('cors')
 const app = express() // Creates an express application -- express is a better interface to deal with backend dev
 
 const requestLogger = (request, response, next) => {
@@ -21,6 +22,7 @@ const unknownEndpoint = (request, response, next) => {
 
 app.use(express.json())
 app.use(requestLogger)
+app.use(cors())
 
 // Define the data to send back
 let notes = [
@@ -112,6 +114,7 @@ app.post('/api/notes', (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT , () => {
+    console.log(`Server running on port ${PORT}`)
+})
