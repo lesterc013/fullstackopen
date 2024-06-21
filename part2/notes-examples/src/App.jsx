@@ -1,3 +1,5 @@
+// Testing commit and push from wsl2
+
 import { useState, useEffect } from "react"
 // import axios from 'axios'
 import Note from "./components/Note"
