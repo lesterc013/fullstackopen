@@ -1,5 +1,13 @@
-const express = require('express')
-const app = express()
+const express = require('express') // Importing express module
+const morgan = require('morgan') // Importing morgan module
+
+const app = express() // app can now access the ease of using express to build the backend
+
+/**
+ * End of the day, middleware are really just functions that do something with the request before the routes, or can be done after the routes - like in the case of response.status(400).json({'error': 'no page found'})
+ */
+app.use(express.json()) // Middleware to parse request body as json
+app.use(morgan('tiny')) // Middleware to console log request data 
 
 let phonebook = [
     { 
@@ -69,7 +77,6 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-app.use(express.json()) // Remember this one for POSTS if not app can't read body
 app.post('/api/persons', (request, response) => {
    const body = request.body
    if (!body.name || !body.number) {
