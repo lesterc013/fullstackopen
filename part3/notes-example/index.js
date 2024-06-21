@@ -5,6 +5,23 @@
 const express = require('express')
 const app = express() // Creates an express application -- express is a better interface to deal with backend dev
 
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:', request.path)
+    console.log('Body:', request.body)
+    console.log('---')
+    next()
+}
+
+const unknownEndpoint = (request, response, next) => {
+    response.status(404).json({
+        'error': 'unknown endpoint'
+    })
+}
+
+app.use(express.json())
+app.use(requestLogger)
+
 // Define the data to send back
 let notes = [
     {
@@ -26,7 +43,7 @@ let notes = [
 
 // Defining routes to the application. Think of it as like the views in django and how each route has a different function
 app.get('/', (request, response) => {
-    response.send('<h1>Hello World!!</h1>')
+    response.send('<h1>Notes Example</h1>')
 })
 
 app.get('/api/notes', (request, response) => {
@@ -63,7 +80,6 @@ const generateID = () => {
 }
 
 // Add new note
-app.use(express.json())
 app.post('/api/notes', (request, response) => {
     
     // Without express.json(), the body property of the request will be undefined. 
@@ -93,6 +109,8 @@ app.post('/api/notes', (request, response) => {
 //     // Defines what to send to the user -- which could be HTML, JSON, text etc
 //     response.end(JSON.stringify(notes))
 // })
+
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT)
